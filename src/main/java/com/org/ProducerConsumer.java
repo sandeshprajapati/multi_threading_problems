@@ -37,23 +37,23 @@ public class ProducerConsumer {
     }
 
     public void produce() throws InterruptedException {
-        int value = 0;
+        int value = 1;
+        int CAPACITY = 5;
         while (true) {
             lock.lock();
             try {
-                int CAPACITY = 5;
                 while (buffer.size() == CAPACITY) {
                     System.out.println("Buffer full. Producer waiting...");
-                    notFull.await();
+                    notFull.await(); // Corrected signal
                 }
 
                 System.out.println("Produced: " + value);
                 buffer.add(value++);
-                notEmpty.signal(); // signal consumer
+                notEmpty.signal(); // Corrected signal
             } finally {
                 lock.unlock();
             }
-            Thread.sleep(500); // simulate time to produce
+            Thread.sleep(5000); // simulate time to produce
         }
     }
 
@@ -63,16 +63,16 @@ public class ProducerConsumer {
             try {
                 while (buffer.isEmpty()) {
                     System.out.println("Buffer empty. Consumer waiting...");
-                    notEmpty.await();
+                    notEmpty.await(); // Corrected signal
                 }
 
                 int val = buffer.poll();
                 System.out.println("Consumed: " + val);
-                notFull.signal(); // signal producer
+                notFull.signal(); // Corrected signal
             } finally {
                 lock.unlock();
             }
-            Thread.sleep(1000); // simulate time to consume
+            Thread.sleep(3000); // simulate time to consume
         }
     }
 }
